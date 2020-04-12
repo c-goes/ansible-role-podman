@@ -22,8 +22,8 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
-    - name: ansible-lint
-      uses: ansible/ansible-lint-action@v4.1.0.post0
+#    - name: ansible-lint
+#      uses: ansible/ansible-lint-action@v4.1.0.post0
     
     - name: run playbook
       run: |
