@@ -1,0 +1,4 @@
+---
+# vars file for podman
+containers_fs: fuse-overlayfs
+containers_zfs_fs: zroot/podman

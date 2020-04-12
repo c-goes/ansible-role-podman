@@ -1,0 +1,54 @@
+---
+# tasks file for podman
+
+- name: add podman ppa
+  apt_repository:
+    repo: ppa:projectatomic/ppa
+    state: absent
+  become: yes
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    url: https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_{{ ansible_distribution_version}}/Release.key
+    state: present
+  become: yes
+
+- apt_repository:
+    repo: deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version}}/ /
+    state: present
+  become: yes
+
+- name: Update repositories cache and install podman packages
+  apt:
+    name:
+      - podman
+      - buildah
+      - skopeo
+      - slirp4netns
+      - fuse-overlayfs
+      - python3-pip
+    update_cache: yes
+    state: latest
+  become: yes
+
+
+- name: Create a new volume in pool zroot.
+  zfs:
+    name: "{{ containers_zfs_fs }}"
+    state: present
+  when: containers_fs == "zfs"
+  become: yes
+
+- name: configure storage.conf
+  template:
+    src: "storage.conf.{{ containers_fs }}.j2"
+    dest: /etc/containers/storage.conf
+  become: yes
+
+- name: install podman-compose
+  pip:
+    name: https://github.com/containers/podman-compose/archive/devel.tar.gz
+    executable: pip3
+    state: latest
+  become: yes
+
