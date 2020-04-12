@@ -27,6 +27,6 @@ jobs:
     
     - name: run playbook
       run: |
-        sudo apt -y install python3-pip
+        sudo apt -y install python3-pip python3-setuptools
         pip3 install ansible
         ansible-playbook -i tests/inventory tests/test.yml
