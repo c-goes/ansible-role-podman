@@ -25,7 +25,7 @@ jobs:
 #    - name: ansible-lint
 #      uses: ansible/ansible-lint-action@v4.1.0.post0
     
-    - name: run playbook
+    - name: test role
       run: |
         sudo apt -y install python3-pip python3-setuptools
         pip3 install ansible
