@@ -1,8 +1,5 @@
-[![Build Status](https://travis-ci.com/c-goes/ansible-role-podman.svg?branch=master)](https://travis-ci.com/c-goes/ansible-role-podman)
-
-
-podman
-=======
+ansible-role-podman
+===================
 
 Role to install Podman on Ubuntu.
 
