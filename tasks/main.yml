@@ -25,7 +25,6 @@
       - buildah
       - skopeo
       - slirp4netns
-      - fuse-overlayfs
       - python3-pip
     update_cache: yes
     state: latest
@@ -39,10 +38,51 @@
   when: containers_fs == "zfs"
   become: yes
 
+
+- debug: msg="{{ ansible_distribution_release }}"
+
+- name: newer fuse-overlayfs than ubuntu includes when using focal
+  block:
+    - name: clone fuse-overlayfs
+      git:
+        repo: https://github.com/containers/fuse-overlayfs/
+        dest:  /opt/fuse-overlayfs/
+        version: v1.0.0
+    - name: static build fuse-overlayfs via buildah
+      command: buildah bud -v /opt/fuse-overlayfs/:/build/fuse-overlayfs -t fuse-overlayfs -f ./Dockerfile.static.ubuntu .
+      args:
+        chdir: /opt/fuse-overlayfs/
+        creates: /opt/fuse-overlayfs/fuse-overlayfs
+    - name: copy fuse-overlayfs to /usr/local/bin/fuse-overlayfs
+      copy:
+        remote_src: yes
+        src: /opt/fuse-overlayfs/fuse-overlayfs
+        dest: /usr/local/bin/fuse-overlayfs
+    - name: use correct path for fuse-overlayfs
+      set_fact:
+        fuseoverlayfs_path: /usr/local/bin/fuse-overlayfs
+  when: ansible_distribution_release in ["bionic", "focal"]
+
+
+- name: install fuse-overlayfs from apt
+  apt:
+    name:
+      - fuse-overlayfs
+    update_cache: yes
+    state: latest
+  become: yes
+  when: ansible_distribution_release in ["bionic", "focal"]
+
+
+
+
+
+
 - name: configure storage.conf
   template:
     src: "storage.conf.{{ containers_fs }}.j2"
     dest: /etc/containers/storage.conf
+    backup: yes
   become: yes
 
 - name: install podman-compose
@@ -51,4 +91,6 @@
     executable: pip3
     state: latest
   become: yes
+
+
 

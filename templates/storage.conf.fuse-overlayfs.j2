@@ -5,4 +5,4 @@
 driver = "overlay"
 
 [storage.options]
-mount_program = "/usr/bin/fuse-overlayfs"
+mount_program = "{{ fuseoverlayfs_path|default('/usr/bin/fuse-overlayfs') }}"
