@@ -71,7 +71,7 @@
     update_cache: yes
     state: latest
   become: yes
-  when: ansible_distribution_release in ["bionic", "focal"]
+  when: ansible_distribution_release not in ["bionic", "focal"]
 
 
 
