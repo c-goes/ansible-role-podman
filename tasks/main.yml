@@ -43,6 +43,9 @@
 
 - name: newer fuse-overlayfs than ubuntu includes when using focal
   block:
+    - name: install git
+      apt:
+        name: git
     - name: clone fuse-overlayfs
       git:
         repo: https://github.com/containers/fuse-overlayfs/
@@ -72,9 +75,6 @@
     state: latest
   become: yes
   when: ansible_distribution_release not in ["bionic", "focal"]
-
-
-
 
 
 
